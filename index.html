@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente de Catálogo & Precios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4f6f8;
+            --card-bg: #ffffff;
+            --primary: #1e293b;
+            --accent: #2563eb;
+            --success: #10b981;
+            --error: #ef4444;
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            color: var(--text-main);
+        }
+
+        .dashboard {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 650px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 24px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header img {
+            height: 70px;
+            width: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            object-fit: contain;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary);
+            background: #f8fafc;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .input-group input:focus {
+            border-color: var(--accent);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        #resultado {
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .estado-inicial {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .success-badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            align-self: center;
+        }
+
+        .nombre-copiado {
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px dashed #cbd5e1;
+            word-break: break-word;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .depto-tag {
+            display: block;
+            text-align: center;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            margin-bottom: 5px;
+            font-weight: 800;
+        }
+
+        .precios-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .precio-box {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .precio-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .box-mayor::before { background-color: var(--accent); }
+        .box-detal::before { background-color: var(--error); }
+
+        .precio-label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+
+        .precio-valor {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -1px;
+        }
+
+        .error-msg {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .instruccion {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .instruccion kbd {
+            background: #e2e8f0;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: monospace;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <div class="header">
+        <img src="logo mayor center.png" alt="Mayor Center Logo">
+        <h1>Centro de Escaneo de Catálogo</h1>
+        <p>Precios y validación de artículos para inventario</p>
+    </div>
+    
+    <div class="content">
+        <div class="input-group">
+            <input type="text" id="scanner" placeholder="Posicione el escáner y dispare..." autofocus autocomplete="off">
+        </div>
+        
+        <div id="resultado">
+            <div class="estado-inicial">
+                ⚡ El sistema está listo. Escanee un código de barras o use la lectora física.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="data_precios_v2.js"></script>
+<script>
+    const inputScanner = document.getElementById('scanner');
+    const resultadoDiv = document.getElementById('resultado');
+
+    function limpiarNombreArchivo(nombre) {
+        return String(nombre).replace(/[\\/:*?"<>|]/g, '-').trim();
+    }
+
+    function formatearPrecio(precio) {
+        let num = parseFloat(precio);
+        if (isNaN(num)) return "$0.00";
+        return "$" + num.toFixed(2);
+    }
+
+    // Configuración robusta para disparos veloces de lectoras físicas de códigos de barra
+    inputScanner.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault(); 
+            
+            const codigoEscaneado = inputScanner.value.trim().toLowerCase();
+            inputScanner.value = '';
+
+            if (!codigoEscaneado) return;
+
+            if (typeof inventoryData === 'undefined') {
+                resultadoDiv.innerHTML = `<div class="error-msg">❌ Error base de datos: El archivo de precios data_precios_v2.js no está en la misma carpeta o tiene errores.</div>`;
+                return;
+            }
+
+            const producto = inventoryData.find(item => 
+                String(item.codigo).toLowerCase() === codigoEscaneado
+            );
+
+            if (producto) {
+                const nombreCrudo = producto.nombre;
+                const depto = producto.departamento;
+                const precioMayor = producto.mayor || '0.00';
+                const precioDetal = producto.detal || '0.00';
+                
+                const nombreLimpio = limpiarNombreArchivo(nombreCrudo);
+                const precioMayorFmt = formatearPrecio(precioMayor);
+                const precioDetalFmt = formatearPrecio(precioDetal);
+
+                navigator.clipboard.writeText(nombreLimpio).then(() => {
+                    resultadoDiv.innerHTML = `
+                        <div style="display:flex; flex-direction:column;">
+                            <span class="success-badge">✓ Copiado al portapapeles</span>
+                            
+                            <div class="nombre-copiado">
+                                <span class="depto-tag">${depto}</span>
+                                ${nombreLimpio}
+                            </div>
+                            
+                            <div class="precios-grid">
+                                <div class="precio-box box-mayor">
+                                    <span class="precio-label">Precio Mayor</span>
+                                    <span class="precio-valor">${precioMayorFmt}</span>
+                                </div>
+                                <div class="precio-box box-detal">
+                                    <span class="precio-label">Precio Detal</span>
+                                    <span class="precio-valor">${precioDetalFmt}</span>
+                                </div>
+                            </div>
+
+                            <div class="instruccion">
+                                Seleccione su foto y presione <kbd>Ctrl</kbd> + <kbd>V</kbd>
+                            </div>
+                        </div>
+                    `;
+                }).catch(err => {
+                    resultadoDiv.innerHTML = `<div class="error-msg">Error al copiar. Copie manualmente:<br><br><b>${nombreLimpio}</b></div>`;
+                });
+
+            } else {
+                resultadoDiv.innerHTML = `<div class="error-msg">❌ No se encontró el producto con el código:<br><b>${codigoEscaneado}</b></div>`;
+            }
+        }
+    });
+
+    // Enfoque automático continuo para que nunca tengas que hacer clic manual
+    document.addEventListener('click', () => {
+        inputScanner.focus();
+    });
+</script>
+
+</body>
+</html>

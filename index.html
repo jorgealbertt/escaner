@@ -142,7 +142,7 @@
             font-weight: 600;
             color: var(--primary);
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .depto-tag {
@@ -154,6 +154,18 @@
             color: var(--accent);
             margin-bottom: 5px;
             font-weight: 800;
+        }
+
+        .existencia-tag {
+            display: inline-block;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            align-self: center;
         }
 
         .precios-grid {
@@ -188,19 +200,19 @@
 
         .precio-label {
             display: block;
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-muted);
             text-transform: uppercase;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             margin-top: 5px;
         }
 
         .precio-valor {
-            font-size: 28px;
+            font-size: 38px; /* Aumentado el tamaño del precio */
             font-weight: 800;
             color: var(--primary);
-            letter-spacing: -1px;
+            letter-spacing: -1.5px;
         }
 
         .error-msg {
@@ -290,6 +302,7 @@
                 const depto = producto.departamento;
                 const precioMayor = producto.mayor || '0.00';
                 const precioDetal = producto.detal || '0.00';
+                const existencia = producto.existencia || '0';
                 
                 const nombreLimpio = limpiarNombreArchivo(nombreCrudo);
                 const precioMayorFmt = formatearPrecio(precioMayor);
@@ -305,6 +318,10 @@
                                 ${nombreLimpio}
                             </div>
                             
+                            <div class="existencia-tag">
+                                📦 Existencia: ${existencia} UND
+                            </div>
+
                             <div class="precios-grid">
                                 <div class="precio-box box-mayor">
                                     <span class="precio-label">Precio Mayor</span>
